@@ -4,7 +4,6 @@ import About from './components/About';
 import Skills from './components/Skills';
 import Projects from './components/Projects';
 import Experience from './components/Experience';
-import Contact from './components/Contact';
 import BackgroundPattern from './components/BackgroundPattern';
 import Navigation from './components/Navigation';
 
@@ -26,7 +25,6 @@ function App() {
         <Skills />
         <Projects />
         <Experience />
-        <Contact />
       </div>
 
       <footer className="relative z-10 py-8 text-center text-gray-400 text-sm border-t border-gray-800">

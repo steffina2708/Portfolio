@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { Mail, Phone, MapPin, Github, Linkedin, Send } from 'lucide-react';
+import emailjs from '@emailjs/browser';
 
 export default function Contact() {
   const [isVisible, setIsVisible] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [statusMessage, setStatusMessage] = useState({ type: '', text: '' });
   const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -31,12 +33,32 @@ export default function Contact() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setStatusMessage({ type: '', text: '' });
 
-    setTimeout(() => {
-      alert('Thanks for reaching out! This is a demo form.');
+    try {
+      // EmailJS configuration
+      const serviceId = 'YOUR_SERVICE_ID'; // Replace with your EmailJS service ID
+      const templateId = 'YOUR_TEMPLATE_ID'; // Replace with your EmailJS template ID
+      const publicKey = 'YOUR_PUBLIC_KEY'; // Replace with your EmailJS public key
+
+      // Template parameters
+      const templateParams = {
+        from_name: formData.name,
+        from_email: formData.email,
+        message: formData.message,
+        to_email: 'steffinaevangelin.27it@licet.ac.in',
+      };
+
+      await emailjs.send(serviceId, templateId, templateParams, publicKey);
+      
+      setStatusMessage({ type: 'success', text: 'Message sent successfully! I\'ll get back to you soon.' });
       setFormData({ name: '', email: '', message: '' });
+    } catch (error) {
+      console.error('Email sending failed:', error);
+      setStatusMessage({ type: 'error', text: 'Failed to send message. Please try again or contact me directly via email.' });
+    } finally {
       setIsSubmitting(false);
-    }, 1000);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -246,6 +268,16 @@ export default function Contact() {
                     </span>
                     <div className="absolute inset-0 bg-gradient-to-r from-violet-500 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   </button>
+
+                  {statusMessage.text && (
+                    <div className={`p-4 rounded-lg text-sm ${
+                      statusMessage.type === 'success' 
+                        ? 'bg-green-500/10 border border-green-500/30 text-green-400' 
+                        : 'bg-red-500/10 border border-red-500/30 text-red-400'
+                    }`}>
+                      {statusMessage.text}
+                    </div>
+                  )}
                 </div>
               </form>
             </div>
